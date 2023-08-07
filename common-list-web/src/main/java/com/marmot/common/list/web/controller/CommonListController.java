@@ -1,22 +1,19 @@
 package com.marmot.common.list.web.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.marmot.common.list.sdk.common.PageData;
 import com.marmot.common.list.sdk.common.ResponseResult;
 import com.marmot.common.list.sdk.dto.CommonListDto;
-import com.marmot.common.list.sdk.dto.CommonListTypeDto;
 import com.marmot.common.list.sdk.enums.ErrorEnum;
-import com.marmot.common.list.sdk.enums.TypeStatusEnum;
-import com.marmot.common.list.sdk.query.BaseQuery;
-import com.marmot.common.list.sdk.query.QueryParam;
+import com.marmot.common.list.sdk.enums.fields.CommonListFieldEnum;
+import com.marmot.common.list.sdk.query.QueryCond;
 import com.marmot.common.list.sdk.request.*;
 import com.marmot.common.list.sdk.utils.ResponseResultUtil;
 import com.marmot.common.list.web.aggService.CommonListAggService;
 import com.marmot.common.list.web.constant.ApiPath;
-import com.marmot.common.list.web.domain.cond.QueryCond;
 import com.marmot.common.list.web.domain.entity.CommonList;
-import com.marmot.common.list.web.domain.entity.CommonListType;
 import com.marmot.common.list.web.service.CommonListService;
 import com.marmot.common.list.web.service.CommonListTypeService;
 import com.marmot.common.list.web.utils.NumberUtil;
@@ -24,7 +21,6 @@ import com.marmot.common.list.web.utils.PageDataUtil;
 import com.marmot.common.list.web.utils.QueryParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,14 +60,16 @@ public class CommonListController {
         int pageSize = NumberUtil.isPositive(req.getPageSize()) ? req.getPageSize():10;
         req.setPageNo(pageNo);
         req.setPageSize(pageSize);
+
         QueryCond cond = new QueryCond();
-        String errMsg;
-        errMsg = StringUtils.isNotBlank((errMsg = QueryParamUtil.parse(new QueryParam(req.getQueries(), null), cond))) ? errMsg : QueryParamUtil.valid(cond);
+        String errMsg = QueryParamUtil.transQueryParam(req.getQueryParam(),cond, CommonListFieldEnum.allFields());
         if (StringUtils.isNotBlank(errMsg)){
+            log.warn("query param error, req={}, errMsg={}", JSONUtil.toJsonStr(req), errMsg);
             return ResponseResultUtil.fail(ErrorEnum.PARAM_ERROR, errMsg);
         }
+
         Page<CommonList> page = listService.commonListPage(req.getSysCode(), req.getTypeId(), cond, req.getPageNo(),req.getPageSize());
-        PageData<CommonListDto> pageData = PageDataUtil.fromPage(page, (data) -> BeanUtil.copyProperties(data, CommonListDto.class));
+        PageData<CommonListDto> pageData = PageDataUtil.transWithCopy(page, CommonListDto.class);
         return ResponseResultUtil.success(pageData);
     }
 
@@ -115,9 +113,9 @@ public class CommonListController {
 
         //解析查询参数
         QueryCond cond = new QueryCond();
-        String errMsg;
-        errMsg = StringUtils.isNotBlank((errMsg = QueryParamUtil.parse(req.getQueryParam(), cond))) ? errMsg : QueryParamUtil.valid(cond);
+        String errMsg = QueryParamUtil.transQueryParam(req.getQueryParam(),cond, CommonListFieldEnum.allFields());
         if (StringUtils.isNotBlank(errMsg)){
+            log.warn("query param error, req={}, errMsg={}", JSONUtil.toJsonStr(req), errMsg);
             return ResponseResultUtil.fail(ErrorEnum.PARAM_ERROR, errMsg);
         }
 

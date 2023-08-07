@@ -1,11 +1,7 @@
 package com.marmot.common.list.web.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.marmot.common.list.sdk.query.utils.QueryUtil;
-import com.marmot.common.list.web.domain.cond.QueryCond;
-import com.marmot.common.list.web.domain.entity.CommonList;
 import com.marmot.common.list.web.domain.entity.CommonListType;
 import com.marmot.common.list.web.mapper.CommonListTypeMapper;
 import org.springframework.stereotype.Service;

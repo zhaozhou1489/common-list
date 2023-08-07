@@ -15,6 +15,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QueryParam {
+    //查询方式，如equal，like等
     private List<String> queries;
+
+    //limit
     private Limit limit;
+
+    //排序方式
+    private List<Order> orders;
 }

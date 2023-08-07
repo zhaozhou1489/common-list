@@ -1,5 +1,6 @@
 package com.marmot.common.list.sdk.request;
 
+import com.marmot.common.list.sdk.query.QueryParam;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ public class CommonListPageReq {
     private Long typeId;
 
 
-    private List<String> queries;
+    private QueryParam queryParam;
 
     private Integer pageNo;
 

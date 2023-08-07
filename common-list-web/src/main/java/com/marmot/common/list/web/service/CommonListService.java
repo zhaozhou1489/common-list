@@ -2,9 +2,8 @@ package com.marmot.common.list.web.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.marmot.common.list.sdk.query.QueryCond;
 import com.marmot.common.list.sdk.query.utils.QueryUtil;
-import com.marmot.common.list.web.domain.cond.QueryCond;
 import com.marmot.common.list.web.domain.entity.CommonList;
 import com.marmot.common.list.web.mapper.CommonListMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -31,9 +30,7 @@ public class CommonListService extends ExtendServiceImpl<CommonListMapper, Commo
         QueryWrapper<CommonList> wrapper = new QueryWrapper<>();
         wrapper.eq("sys_code", sysCode)
                 .eq("type_id", typeId);
-        QueryUtil.transQueries(wrapper, cond.getQueries());
-        QueryUtil.setLimit(wrapper,cond.getLimit());
-        wrapper.orderByDesc("create_stamp");
+        QueryUtil.transQueryCond(wrapper,cond);
         return baseMapper.selectPage(new Page<CommonList>(pageNo, pageSize),wrapper);
     }
 
@@ -42,8 +39,7 @@ public class CommonListService extends ExtendServiceImpl<CommonListMapper, Commo
         QueryWrapper<CommonList> qw = new QueryWrapper();
         qw.eq("sys_code",syscode);
         qw.eq("type_id", typeId);
-        QueryUtil.transQueries(qw, queryCond.getQueries());
-        QueryUtil.setLimit(qw, queryCond.getLimit());
+        QueryUtil.transQueryCond(qw,queryCond);
         qw.orderByDesc("modifyTime");
         return baseMapper.selectList(qw);
     }

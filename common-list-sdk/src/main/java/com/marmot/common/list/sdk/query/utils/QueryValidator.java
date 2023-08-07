@@ -13,7 +13,7 @@ import java.util.List;
  * @Desc:
  */
 public class QueryValidator {
-    public static <T extends BaseQuery>  String validEqualQuery(T query){
+    public static <T extends BaseQuery>  String validQuery(T query){
         if (query instanceof EqualQuery){
             EqualQuery q = (EqualQuery) query;
             if (StringUtils.isBlank(q.getField()) || StringUtils.isBlank(q.getValue())){
@@ -49,7 +49,7 @@ public class QueryValidator {
 
     public static <T extends BaseQuery>  String validQueries(List<T> queries){
         for (T query: queries){
-            String errMsg = validEqualQuery(query);
+            String errMsg = validQuery(query);
             if (StringUtils.isNotBlank(errMsg)){
                 return errMsg;
             }

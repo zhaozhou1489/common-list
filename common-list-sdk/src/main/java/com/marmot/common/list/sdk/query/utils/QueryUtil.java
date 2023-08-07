@@ -1,10 +1,15 @@
 package com.marmot.common.list.sdk.query.utils;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.marmot.common.list.sdk.enums.QueryOrderEnum;
 import com.marmot.common.list.sdk.query.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -14,7 +19,14 @@ import java.util.List;
  */
 public class QueryUtil {
 
-    public static <T extends BaseQuery> QueryWrapper transQueries(QueryWrapper wrapper, List<T> queries){
+    public static AbstractWrapper transQueryCond(AbstractWrapper wrapper, QueryCond cond){
+        transQueries(wrapper,cond.getQueries());
+        setLimit(wrapper,cond.getLimit());
+        setOrderBy(wrapper,cond.getOrders());
+        return wrapper;
+    }
+
+    public static <T extends BaseQuery> AbstractWrapper transQueries(AbstractWrapper wrapper, List<T> queries){
         queries.stream().forEach(q -> {
             q.setField(StrUtil.toUnderlineCase(q.getField()));
             transQuery(wrapper, q);
@@ -24,7 +36,7 @@ public class QueryUtil {
 
 
 
-    public static <T extends BaseQuery> QueryWrapper transQuery(QueryWrapper wrapper, T query){
+    public static <T extends BaseQuery> AbstractWrapper transQuery(AbstractWrapper wrapper, T query){
         if (query instanceof EqualQuery){
             EqualQuery q = (EqualQuery) query;
             transEqualQuery(wrapper, q);
@@ -45,12 +57,12 @@ public class QueryUtil {
 
 
 
-    public static QueryWrapper transEqualQuery(QueryWrapper wrapper, EqualQuery query){
+    public static AbstractWrapper transEqualQuery(AbstractWrapper wrapper, EqualQuery query){
         wrapper.eq(query.getField(), query.getValue());
         return wrapper;
     }
 
-    public static QueryWrapper transLikeQuery(QueryWrapper wrapper, LikeQuery query){
+    public static AbstractWrapper transLikeQuery(AbstractWrapper wrapper, LikeQuery query){
         if (query.isLeft() && query.isRight()){
             wrapper.like(query.getField(), query.getLikeValue());
         }else if (query.isLeft()){
@@ -62,7 +74,7 @@ public class QueryUtil {
         return wrapper;
     }
 
-    public static QueryWrapper transRangeQuery(QueryWrapper wrapper, RangeQuery query){
+    public static AbstractWrapper transRangeQuery(AbstractWrapper wrapper, RangeQuery query){
         if (StringUtils.isNotBlank(query.getMax())){
             if (query.getIncludeMax()){
                 wrapper.le(query.getField(), query.getMax());
@@ -81,15 +93,33 @@ public class QueryUtil {
         return wrapper;
     }
 
-    public static QueryWrapper transInQuery(QueryWrapper wrapper, InQuery query){
+    public static AbstractWrapper transInQuery(AbstractWrapper wrapper, InQuery query){
         wrapper.in(query.getField(), query.getValues());
         return wrapper;
     }
 
-    public static QueryWrapper setLimit(QueryWrapper wrapper, Limit limit){
+    public static AbstractWrapper setLimit(AbstractWrapper wrapper, Limit limit){
         if (limit != null){
             wrapper.last("limit " + limit.getOffset() + " , " + limit.getCount());
         }
+        return wrapper;
+    }
+
+    public static AbstractWrapper setOrderBy(AbstractWrapper wrapper, List<Order> orders){
+        if (CollectionUtils.isEmpty(orders)){
+            return wrapper;
+        }
+        //按order排序
+        Collections.sort(orders, new Comparator<Order>() {
+            @Override
+            public int compare(Order o1, Order o2) {
+                return Integer.compare(o1.getOrder(), o2.getOrder());
+            }
+        });
+        orders.stream().forEach(o -> {
+            wrapper.orderBy(true,o.getSortStr().equalsIgnoreCase(QueryOrderEnum.ASC.getOrderStr()),StrUtil.toUnderlineCase(o.getField()));
+        });
+
         return wrapper;
     }
 

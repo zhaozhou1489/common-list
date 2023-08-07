@@ -68,6 +68,10 @@
             <artifactId>hutool-all</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
 
 
         <dependency>

@@ -4,6 +4,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.marmot.common.list.sdk.enums.QueryTypeEnum;
 import com.marmot.common.list.sdk.query.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -31,17 +32,17 @@ public class QueryParser {
     }
 
 
-    public static List<BaseQuery> parseQueries(List<String> queryStrs){
-        List<BaseQuery> queries = new LinkedList<>();
-        queryStrs.stream().forEach(q -> {
+    public static String parseQueries(List<String> queryStrs, List<BaseQuery> queries) {
+        if (CollectionUtils.isEmpty(queryStrs)) return "";
+        for (String q : queryStrs) {
             JSONObject jsonObj = JSONUtil.parseObj(q);
             String queryType = jsonObj.getStr("queryType");
             Class<? extends BaseQuery> queryClass = queryNameClassMap.get(queryType);
-            if (queryClass == null){
-                throw new IllegalArgumentException("queryType=" + queryType + " is invalid");
+            if (queryClass == null) {
+                return "queryType=" + queryType + " is invalid";
             }
             queries.add(parseQuery(q, queryClass));
-        });
-        return queries;
+        }
+        return "";
     }
 }

@@ -2,7 +2,6 @@ package com.marmot.common.list.web.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.marmot.common.list.sdk.query.QueryCond;
 import com.marmot.common.list.sdk.query.utils.QueryUtil;
 import com.marmot.common.list.web.domain.entity.CommonList;
@@ -16,13 +15,9 @@ import java.util.List;
 
 
 @Service
-public class ListUpdateRuleService extends ServiceImpl<ListUpdateRuleMapper, ListUpdateRule> {
+public class ListUpdateService extends ExtendServiceImpl<ListUpdateRuleMapper, ListUpdateRule> {
 
-    public List<ListUpdateRule> listByTypeId(String sysCode, Long typeId){
-        QueryWrapper<ListUpdateRule> wrapper = new QueryWrapper<>();
-        wrapper.eq("sys_code", sysCode)
-                .eq("type_id", typeId);
-        return baseMapper.selectList(wrapper);
-    }
+
+
 
 }

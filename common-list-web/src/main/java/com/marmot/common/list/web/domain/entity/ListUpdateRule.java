@@ -14,6 +14,8 @@ public class ListUpdateRule {
 
     private Long id;
 
+    private String sysCode;
+
     /**
      * @Desc 类型id
      **/

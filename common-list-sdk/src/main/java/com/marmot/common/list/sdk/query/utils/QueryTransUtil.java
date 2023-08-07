@@ -1,14 +1,8 @@
-package com.marmot.common.list.web.utils;
+package com.marmot.common.list.sdk.query.utils;
 
 import cn.hutool.json.JSONUtil;
 import com.marmot.common.list.sdk.enums.QueryOrderEnum;
-import com.marmot.common.list.sdk.query.BaseQuery;
-import com.marmot.common.list.sdk.query.Limit;
-import com.marmot.common.list.sdk.query.QueryCond;
-import com.marmot.common.list.sdk.query.QueryParam;
-import com.marmot.common.list.sdk.query.utils.QueryParser;
-import com.marmot.common.list.sdk.query.utils.QueryValidator;
-import lombok.extern.slf4j.Slf4j;
+import com.marmot.common.list.sdk.query.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,11 +15,10 @@ import java.util.stream.Stream;
 
 /**
  * @Author:zhaozhou
- * @Date: 2023/07/25
- * @Desc:
+ * @Date: 2023/08/01
+ * @Desc: todo
  */
-@Slf4j
-public class QueryParamUtil {
+public class QueryTransUtil {
 
 
     private static final long LIMIT_COUNT_MAX = 10000;
