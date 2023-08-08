@@ -14,6 +14,7 @@ import com.marmot.common.list.sdk.utils.ResponseResultUtil;
 import com.marmot.common.list.web.aggService.CommonListAggService;
 import com.marmot.common.list.web.constant.ApiPath;
 import com.marmot.common.list.web.domain.entity.CommonList;
+import com.marmot.common.list.web.domain.entity.CommonListType;
 import com.marmot.common.list.web.service.CommonListService;
 import com.marmot.common.list.web.service.CommonListTypeService;
 import com.marmot.common.list.web.utils.NumberUtil;
@@ -22,6 +23,7 @@ import com.marmot.common.list.web.utils.QueryParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,6 +70,12 @@ public class CommonListController {
             return ResponseResultUtil.fail(ErrorEnum.PARAM_ERROR, errMsg);
         }
 
+        CommonListType type = listTypeService.getByTypeId(req.getTypeId());
+        if (type == null){
+            log.warn("can not find list type, req={}", req);
+            return ResponseResultUtil.fail(ErrorEnum.PARAM_ERROR,"Param [typeId] is invalid");
+        }
+
         Page<CommonList> page = listService.commonListPage(req.getSysCode(), req.getTypeId(), cond, req.getPageNo(),req.getPageSize());
         PageData<CommonListDto> pageData = PageDataUtil.transWithCopy(page, CommonListDto.class);
         return ResponseResultUtil.success(pageData);
@@ -78,11 +86,47 @@ public class CommonListController {
      * @Param
      * @return
      **/
-    @PostMapping(value = "/modify")
-    public ResponseResult listAdd(@Validated @RequestBody CommonListAddReq req){
+    @PostMapping(value = "/add")
+    public ResponseResult add(@Validated @RequestBody CommonListAddReq req){
         CommonList commonList = BeanUtil.copyProperties(req, CommonList.class);
         commonList.setModifyTime(System.currentTimeMillis());
+        CommonListType type = listTypeService.getByTypeId(req.getTypeId());
+        if (type == null){
+            log.warn("can not find list type, req={}", req);
+            return ResponseResultUtil.fail(ErrorEnum.PARAM_ERROR,"Param [typeId] is invalid");
+        }
         return listAggService.saveOrUpdate(commonList) ? ResponseResultUtil.success():ResponseResultUtil.fail();
+    }
+
+
+    /**
+     * @Desc 添加/更新名单
+     * @Param
+     * @return
+     **/
+    @PostMapping(value = "/update")
+    @Transactional
+    public ResponseResult update(@Validated @RequestBody CommonListUpdateReq req){
+        CommonList commonList = BeanUtil.copyProperties(req, CommonList.class,"sysCode","typeId","bizKey");
+        commonList.setModifyTime(System.currentTimeMillis());
+        //校验typeId是否一致
+        CommonListType type = listTypeService.getByTypeId(req.getTypeId());
+        if (type == null){
+            log.warn("can not find list type, req={}", req);
+            return ResponseResultUtil.fail(ErrorEnum.PARAM_ERROR,"Param [typeId] is invalid");
+        }
+        //查询旧list信息
+        CommonList oldData = listService.getByListId(req.getId());
+        if (oldData == null){
+            log.warn("can not find list data, id={}", req.getId());
+            return ResponseResultUtil.fail(ErrorEnum.LIST_NOT_EXIST);
+        }
+        //校验sysCode、typeId、bizKey是否与库中一致
+        if (!oldData.getSysCode().equals(req.getSysCode()) || !oldData.getTypeId().equals(req.getTypeId()) || !oldData.getBizKey().equals(req.getBizKey())){
+            log.warn("update list req data invalid, req={}, oldData={}", req,oldData);
+            return ResponseResultUtil.fail(ErrorEnum.PARAM_ERROR, "[sysCode]|[typeId]|[bizKey] has some one dose not match with old data");
+        }
+        return listService.updateById(commonList) ? ResponseResultUtil.success():ResponseResultUtil.fail();
     }
 
 
@@ -92,7 +136,7 @@ public class CommonListController {
      * @return
      **/
     @PostMapping(value = "/delete")
-    public ResponseResult listDelete(@Validated @RequestBody CommonListDeleteReq req){
+    public ResponseResult delete(@Validated @RequestBody CommonListDeleteReq req){
         CommonList commonList = listService.getCommonList(req.getSysCode(),req.getListId());
         if (commonList == null){
             return ResponseResultUtil.fail(ErrorEnum.LIST_NOT_EXIST);
@@ -109,7 +153,7 @@ public class CommonListController {
      * @return
      **/
     @PostMapping(value = "/find")
-    public ResponseResult<List<CommonListDto>> findList(@Validated @RequestBody CommonListFindReq req){
+    public ResponseResult<List<CommonListDto>> find(@Validated @RequestBody CommonListFindReq req){
 
         //解析查询参数
         QueryCond cond = new QueryCond();

@@ -46,19 +46,21 @@ public class CommonListTypeAddReq {
     /**
      * @Desc string类型扩展字段
      **/
-    @Size(min = -1, max = 200, message = "[strParam] length needs to be less than 200")
+    @Size(max = 200, message = "[strParam] length needs to be less than 200")
     private String strParam;
 
     /**
      * @Desc 操作人id
      **/
-    @Size(min = -1, max = 50, message = "[strParam] length needs to be less than 50")
+    @Size(max = 50, message = "[strParam] length needs to be less than 50")
+    @NotBlank(message = "[operatorId] should not blank")
     private String operatorId;
 
     /**
      * @Desc 操作人名称
      **/
-    @Size(min = -1, max = 200, message = "[strParam] length needs to be less than 200")
+    @Size(max = 200, message = "[strParam] length needs to be less than 200")
+    @NotBlank(message = "[operatorName] should not blank")
     private String operatorName;
 
 }

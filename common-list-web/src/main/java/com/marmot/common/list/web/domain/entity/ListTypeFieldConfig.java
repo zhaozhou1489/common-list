@@ -1,5 +1,7 @@
 package com.marmot.common.list.web.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ListTypeFieldConfig {
+    @TableId(value = "id", type = IdType.INPUT)
     private Long id;
 
     /**

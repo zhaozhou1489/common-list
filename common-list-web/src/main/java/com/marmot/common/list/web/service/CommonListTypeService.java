@@ -14,7 +14,7 @@ public class CommonListTypeService extends ServiceImpl<CommonListTypeMapper, Com
 
 
     public CommonListType getByTypeId(Long typeId){
-        return this.getOne(lambdaQuery().eq(CommonListType::getId, typeId));
+        return baseMapper.selectOne("id", typeId);
     }
 
     public boolean existByTypeId(String sysCode, long typeId){

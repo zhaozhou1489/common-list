@@ -1,0 +1,18 @@
+server:
+  port: 8888
+
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: BUILD_COMMON
+  jackson:
+    default-property-inclusion: non_empty
+
+mybatis-plus:
+  global-config:
+    field-strategy: NOT_NULL
+  configuration:
+    map-underscore-to-camel-case: true
+

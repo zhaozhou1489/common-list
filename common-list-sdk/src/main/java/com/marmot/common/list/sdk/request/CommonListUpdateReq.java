@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 /**
  * @Author:zhaozhou
@@ -15,18 +18,32 @@ import javax.validation.constraints.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonListAddReq {
+public class CommonListUpdateReq {
 
+    @NotNull(message = "[id] should not null")
+    @Positive(message = "[id] value is invalid")
+    private Long id;
+
+    /**
+     * @Desc 不能更改
+     **/
     @NotBlank(message = "[sys_code] should not blank")
     @JsonProperty(value = "sys_code")
     private String sysCode;
 
 
+    /**
+     * @Desc 不能更改
+     **/
     @NotNull(message = "[type_id] should not null")
     @Positive(message = "[type_id] value is invalid")
     @JsonProperty(value = "type_id")
     private Long typeId;
 
+
+    /**
+     * @Desc 不能更改
+     **/
     @NotBlank(message = "[biz_key] should not blank")
     @Size(min = 1, max = 200, message = "[biz_key] should less than 200")
     @JsonProperty(value = "biz_key")

@@ -28,7 +28,7 @@ public class ExtendServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
             options.setIgnoreNullValue(true);
             options.setIgnoreProperties("id");
             BeanUtil.copyProperties(entity,data,options);
-            return baseMapper.updateById(entity) > 0;
+            return baseMapper.updateById(data) > 0;
         }else {
             return baseMapper.insert(entity) > 0;
         }

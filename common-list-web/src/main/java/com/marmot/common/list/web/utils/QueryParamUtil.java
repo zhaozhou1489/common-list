@@ -2,10 +2,7 @@ package com.marmot.common.list.web.utils;
 
 import cn.hutool.json.JSONUtil;
 import com.marmot.common.list.sdk.enums.QueryOrderEnum;
-import com.marmot.common.list.sdk.query.BaseQuery;
-import com.marmot.common.list.sdk.query.Limit;
-import com.marmot.common.list.sdk.query.QueryCond;
-import com.marmot.common.list.sdk.query.QueryParam;
+import com.marmot.common.list.sdk.query.*;
 import com.marmot.common.list.sdk.query.utils.QueryParser;
 import com.marmot.common.list.sdk.query.utils.QueryValidator;
 import lombok.extern.slf4j.Slf4j;

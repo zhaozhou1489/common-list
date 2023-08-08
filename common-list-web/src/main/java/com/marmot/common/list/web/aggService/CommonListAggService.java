@@ -13,14 +13,12 @@ import com.marmot.common.list.web.service.ListUpdateRuleService;
 import com.marmot.common.list.web.utils.ExtMapUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,18 +40,20 @@ public class CommonListAggService {
 
 
     public boolean saveOrUpdate(CommonList commonList){
-        //todo 查询更新唯一键规则
+        //查询数据校验规则，若没有，则使用默认规则
         //默认规则，biz_key必须唯一
         List<ListUpdateRule> updateRuleList = updateRuleService.listByTypeId(commonList.getSysCode(), commonList.getTypeId());
         Set<String> uniqField = new HashSet<>();
-        if (CollectionUtils.isEmpty(updateRuleList)){
+        Map<String, Object>  uniqMap = new HashMap<>();
+        if (!CollectionUtils.isEmpty(updateRuleList)){
             uniqField = new HashSet<>(JSON.parseArray(updateRuleList.get(0).getRule(),String.class));
+            uniqMap = ExtMapUtil.holdByKey(BeanUtil.beanToMap(commonList), uniqField);
         }
-        if (CollectionUtils.isEmpty(uniqField)){
+        if (MapUtils.isEmpty(uniqMap)){
             uniqField.add("sysCode");
             uniqField.add("bizKey");
+            uniqMap = ExtMapUtil.holdByKey(BeanUtil.beanToMap(commonList), uniqField);
         }
-        Map<String, Object>  uniqMap = ExtMapUtil.holdByKey(BeanUtil.beanToMap(commonList), uniqField);
         return listService.saveOrUpdate(commonList, uniqMap);
     }
 

@@ -38,7 +38,7 @@ public class CommonListTypeController {
      * @Param
      * @return
      **/
-    @PostMapping("/allTypes")
+    @PostMapping("/all")
     public ResponseResult<List<CommonListTypeDto>> allTypes(@Validated @RequestBody CommonListTypeAllReq req) {
         List<CommonListType> allTypes = listTypeService.listBySysCode(req.getSysCode());
         List<CommonListTypeDto> typeDtos = BeanUtil.copyToList(allTypes, CommonListTypeDto.class);
@@ -88,6 +88,9 @@ public class CommonListTypeController {
         CommonListType listType = listTypeService.getByTypeId(req.getId());
         if (listType == null) {
             return ResponseResultUtil.fail(ErrorEnum.TYPE_NOT_EXIST);
+        }
+        if (!listType.getSysCode().equals(req.getSysCode())){
+            return ResponseResultUtil.fail(ErrorEnum.NO_RIGHT_TO_ACCESS);
         }
         return listTypeService.deleteById(req.getId()) ? ResponseResultUtil.success() : ResponseResultUtil.fail();
     }

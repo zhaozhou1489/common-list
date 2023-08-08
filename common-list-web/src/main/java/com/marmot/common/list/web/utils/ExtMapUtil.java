@@ -1,5 +1,6 @@
 package com.marmot.common.list.web.utils;
 
+import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -22,7 +23,7 @@ public class ExtMapUtil {
         }
         map.entrySet().stream().forEach(en -> {
             if (keys.contains(en.getKey())){
-                retMap.put(en.getKey(),en.getValue());
+                retMap.put(StrUtil.toUnderlineCase(en.getKey()),en.getValue());
             }
         });
         return retMap;

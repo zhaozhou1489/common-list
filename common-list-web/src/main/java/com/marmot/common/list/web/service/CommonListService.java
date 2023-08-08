@@ -40,7 +40,6 @@ public class CommonListService extends ExtendServiceImpl<CommonListMapper, Commo
         qw.eq("sys_code",syscode);
         qw.eq("type_id", typeId);
         QueryUtil.transQueryCond(qw,queryCond);
-        qw.orderByDesc("modifyTime");
         return baseMapper.selectList(qw);
     }
 

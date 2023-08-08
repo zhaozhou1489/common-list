@@ -10,6 +10,10 @@ public enum ErrorEnum {
     FAIL(1,"失败"),
     SYS_ERROR(2,"系统错误"),
     PARAM_ERROR(3,"参数错误"),
+    BAD_REQUEST(4,"请求错误"),
+    PATH_NOT_FUND(5,"请求资源不存在"),
+    METHOD_NOT_ALLOW(6,"请求方式不允许"),
+    NO_RIGHT_TO_ACCESS(7,"无权访问"),
 
     TYPE_NOT_EXIST(1000, "List type dose not exist"),
 

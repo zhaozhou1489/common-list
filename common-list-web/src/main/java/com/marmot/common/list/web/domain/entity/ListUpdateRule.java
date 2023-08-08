@@ -1,5 +1,7 @@
 package com.marmot.common.list.web.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ListUpdateRule {
 
+    @TableId(value = "id", type = IdType.INPUT)
     private Long id;
 
     private String sysCode;

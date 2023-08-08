@@ -39,7 +39,7 @@ public class ResponseResultUtil {
         return newResponseResult(errorEnum.getCode(), errorEnum.getMsg(), null);
     }
     public static ResponseResult fail(ErrorEnum errorEnum, String msg){
-        return newResponseResult(errorEnum.getCode(), errorEnum.getMsg(), null);
+        return newResponseResult(errorEnum.getCode(), msg, null);
     }
 
 
